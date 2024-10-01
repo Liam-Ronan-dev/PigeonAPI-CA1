@@ -1,5 +1,4 @@
 import { minus, sum } from './tests.js';
-import { describe, it, expect } from 'jest';
 
 describe('Example Tests', () => {
   it('Should minus two numbers', () => {
