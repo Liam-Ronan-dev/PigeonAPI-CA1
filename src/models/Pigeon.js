@@ -10,7 +10,6 @@ const PigeonSchema = new mongoose.Schema({
   bodyType: { type: String },
   diet: { type: String },
   hatchDate: { type: Date },
-  image: { type: String },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   medicalTreatments: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'MedicalTreatment' },
