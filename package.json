@@ -5,12 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{js,ts}\" \"__tests__/**/*.{js,ts}\"",
-    "start": "node src/index.js"
+    "start": "node src/server.js"
   },
   "keywords": [],
   "author": "",
