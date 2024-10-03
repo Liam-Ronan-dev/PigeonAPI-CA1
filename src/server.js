@@ -2,6 +2,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
+import { createUser, singIn } from './handlers/user.js';
 
 dotenv.config();
 const app = express();
@@ -11,8 +12,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send('Hello world');
+  res.json({ message: 'hello world' });
 });
+
+app.post('/user', createUser);
+app.post('/signin', singIn);
 
 connectDB();
 

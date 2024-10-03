@@ -18,3 +18,5 @@ const RaceHistorySchema = new mongoose.Schema({
   },
   notes: { type: String },
 });
+
+export const RaceHistory = mongoose.model('RaceHistory', RaceHistorySchema);
