@@ -44,6 +44,31 @@ export const getSinglePigeon = async (req, res) => {
   }
 };
 
+export const deletePigeon = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Validate the ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid pigeon ID' });
+    }
+
+    // Find and delete the pigeon by ID
+    const pigeon = await Pigeon.findByIdAndDelete(id);
+
+    // Check if pigeon exists
+    if (!pigeon) {
+      return res.status(404).json({ message: 'Pigeon not found' });
+    }
+
+    // Return a success message
+    res.json({ message: `Pigeon deleted successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', errors: err });
+  }
+};
+
 export const createPigeon = async (req, res, next) => {
   try {
     const {
@@ -94,37 +119,27 @@ export const createPigeon = async (req, res, next) => {
   }
 };
 
-export const updatePigeon = async (req, res) => {};
-
-export const deletePigeon = async (req, res) => {
+export const updatePigeon = async (req, res) => {
   try {
     const id = req.params.id;
+    const updateData = req.body;
 
-    // Validate the ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid pigeon ID' });
+      return res.status(400).json({ message: 'Invalid Pigeon ID' });
     }
 
-    // Find the pigeon by ID
-    const pigeon = await Pigeon.findById(id);
+    const pigeon = await Pigeon.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
-    // Check if pigeon exists
     if (!pigeon) {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    // Check if the authenticated user is the owner of the pigeon
-    if (pigeon.owner.toString() !== req.user.id) {
-      return res
-        .status(403)
-        .json({ message: 'You are not authorized to delete this pigeon' });
-    }
-
-    // Delete the pigeon
-    await Pigeon.deleteOne(id);
-    res.status(200).json({ message: 'Pigeon deleted successfully' });
-  } catch (err) {
-    console.error('Error deleting pigeon:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.json({ data: pigeon });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'server error', errors: error });
   }
 };

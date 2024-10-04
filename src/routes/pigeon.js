@@ -6,16 +6,18 @@ import {
   deletePigeon,
   getAllPigeons,
   getSinglePigeon,
-} from '../controllers/pigeon.controller.js';
+  updatePigeon,
+} from '../controllers/pigeon.js';
 
 import { protect } from '../modules/auth.js';
 // import upload from '../middleware/upload.js'; // Multer configuration
 
-// Create a new pigeon (protected route)
+// Protected Routes
 router.post('/pigeon', protect, createPigeon);
+router.put('/pigeon/:id', protect, updatePigeon);
 router.delete('/pigeon/:id', protect, deletePigeon);
 
-// Get all pigeons (public route)
+// Public Route)
 router.get('/pigeons', getAllPigeons);
 router.get('/pigeon/:id', getSinglePigeon);
 
