@@ -1,5 +1,5 @@
-import { Pigeon } from '../models/Pigeon.js';
 import mongoose from 'mongoose';
+import { Pigeon } from '../models/Pigeon.js';
 
 export const getAllPigeons = async (req, res) => {
   try {
@@ -91,5 +91,40 @@ export const createPigeon = async (req, res, next) => {
 
     // Pass the error to the next middleware (could be an error handler)
     next(error);
+  }
+};
+
+export const updatePigeon = async (req, res) => {};
+
+export const deletePigeon = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Validate the ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid pigeon ID' });
+    }
+
+    // Find the pigeon by ID
+    const pigeon = await Pigeon.findById(id);
+
+    // Check if pigeon exists
+    if (!pigeon) {
+      return res.status(404).json({ message: 'Pigeon not found' });
+    }
+
+    // Check if the authenticated user is the owner of the pigeon
+    if (pigeon.owner.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: 'You are not authorized to delete this pigeon' });
+    }
+
+    // Delete the pigeon
+    await Pigeon.deleteOne(id);
+    res.status(200).json({ message: 'Pigeon deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting pigeon:', err.message);
+    res.status(500).json({ message: 'Server error' });
   }
 };

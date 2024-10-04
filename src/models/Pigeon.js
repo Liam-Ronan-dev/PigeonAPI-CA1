@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const PigeonSchema = new mongoose.Schema({
   name: { type: String, required: true },
   ringNumber: { type: String, required: true, unique: true },
-  sex: { type: String, enum: ['Male', 'Female'], required: true },
+  sex: { type: String, enum: ['Hen', 'Cock'], required: true },
   breed: { type: String },
   colour: { type: String },
   eyeColour: { type: String },
