@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{js,ts}\" \"__tests__/**/*.{js,ts}\"",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "seed": "node src/utils/seeders/index.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@faker-js/faker": "^9.0.3",
     "@types/jest": "^29.5.13",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
