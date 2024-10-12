@@ -1,21 +1,17 @@
 import mongoose from 'mongoose';
 
 const RaceHistorySchema = new mongoose.Schema({
-  pigeon: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Pigeon',
-    required: true,
-  },
   raceName: { type: String, required: true },
   date: { type: Date, required: true },
-  distance: { type: Number },
-  position: { type: [Number] },
+  distance: { type: String },
+  positions: { type: [String] },
   totalParticipants: { type: Number },
-  windSpeed: { type: Number },
+  windSpeed: { type: String },
   windDirection: {
     type: String,
     enum: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
   },
+  pigeons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pigeon' }],
   notes: { type: String },
 });
 

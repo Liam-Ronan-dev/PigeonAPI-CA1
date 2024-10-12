@@ -4,6 +4,8 @@ import cors from 'cors';
 import { connectDB } from './config/db.js';
 import { createUser, singIn } from './controllers/user.js';
 import pigeonRoutes from './routes/pigeon.js';
+import MedicalTreatmentRoutes from './routes/medicalTreatment.js';
+import raceHistory from './routes/raceHistory.js';
 
 dotenv.config();
 const app = express();
@@ -16,7 +18,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'hello world' });
 });
 
-app.use('/api', pigeonRoutes);
+app.use('/api', pigeonRoutes, MedicalTreatmentRoutes, raceHistory);
 app.post('/user', createUser);
 app.post('/signin', singIn);
 

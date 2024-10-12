@@ -3,9 +3,22 @@ import { Pigeon } from '../models/Pigeon.js';
 
 export const getAllPigeons = async (req, res) => {
   try {
-    const pigeons = await Pigeon.find().populate('owner', 'username email');
-    //   .populate('medicalTreatments')
-    //   .populate('raceHistory');
+    const pigeons = await Pigeon.find()
+      .populate({
+        path: 'owner',
+        model: 'User',
+        select: 'username email',
+      })
+      .populate({
+        path: 'medicalTreatments',
+        model: 'MedicalTreatment',
+        select: 'treatmentName dateAdministered description',
+      })
+      .populate({
+        path: 'raceHistory',
+        model: 'RaceHistory',
+        select: 'raceName date positions',
+      });
 
     res.json({ data: pigeons });
   } catch (err) {
@@ -24,12 +37,22 @@ export const getSinglePigeon = async (req, res) => {
     }
 
     // Find the pigeon by ID
-    const pigeon = await Pigeon.findById(id).populate(
-      'owner',
-      'username email'
-    );
-    //   .populate('medicalTreatments')
-    //   .populate('raceHistory');
+    const pigeon = await Pigeon.findById(id)
+      .populate({
+        path: 'owner',
+        model: 'User',
+        select: 'username email',
+      })
+      .populate({
+        path: 'medicalTreatments',
+        model: 'MedicalTreatment',
+        select: 'treatmentName dateAdministered description',
+      })
+      .populate({
+        path: 'raceHistory',
+        model: 'RaceHistory',
+        select: 'raceName date positions',
+      });
 
     // Check if pigeon exists
     if (!pigeon) {
