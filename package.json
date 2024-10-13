@@ -46,6 +46,7 @@
     "*.js": [
       "prettier --write \"src/**/*.{js,ts}\" \"__tests__/**/*.{js,ts}\"",
       "eslint --fix",
+      "npm run test",
       "git add ."
     ]
   }
