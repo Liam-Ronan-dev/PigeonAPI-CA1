@@ -21,7 +21,6 @@ export const seedRaceHistory = async () => {
       process.exit(1);
     }
 
-
     for (let i = 0; i < numberOfRaceHistories; i++) {
       raceHistories.push({
         raceName: `${faker.lorem.word()} race`,
