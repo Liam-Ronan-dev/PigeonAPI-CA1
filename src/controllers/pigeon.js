@@ -144,7 +144,7 @@ export const createPigeon = async (req, res, next) => {
 
 export const updatePigeon = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const updateData = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {

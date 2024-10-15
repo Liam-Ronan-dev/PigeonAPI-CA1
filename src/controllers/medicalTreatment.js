@@ -94,9 +94,38 @@ export const deleteMedicalTreatment = async (req, res) => {
       return res.status(404).json({ message: 'Medical Treatment not found' });
     }
 
-    res.json({ message: `Medical Treatment deleted successfully` });
+    res.json({ message: `Medical Treatment - id:${id} deleted successfully` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error', errors: err });
+  }
+};
+
+export const updateMedicalTreatment = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updateData = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid Medical Treatment ID' });
+    }
+
+    const medicalTreatment = await MedicalTreatment.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!medicalTreatment) {
+      return res.status(404).json({ message: 'medical Treatment not found' });
+    }
+
+    res.json({ data: medicalTreatment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'server error', errors: error });
   }
 };

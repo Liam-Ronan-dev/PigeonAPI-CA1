@@ -106,9 +106,34 @@ export const deleteRaceHistory = async (req, res) => {
       return res.status(404).json({ message: 'Race not found' });
     }
 
-    res.json({ message: `Race deleted successfully` });
+    res.json({ message: `Race with id: ${id} deleted successfully` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error', errors: err });
+  }
+};
+
+export const updateRaceHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid Race History ID' });
+    }
+
+    const raceHistory = await RaceHistory.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!raceHistory) {
+      return res.status(404).json({ message: 'race History not found' });
+    }
+
+    res.json({ data: raceHistory });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'server error', errors: error });
   }
 };

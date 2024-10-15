@@ -37,6 +37,9 @@ jobs:
       - name: Run Prettier check
         run: npm run format
 
+      - name: Run ESLint check
+        run: npm run lint
+
       - name: Run Unit Tests
         run: npm test
 

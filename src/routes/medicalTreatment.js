@@ -6,12 +6,14 @@ import {
   deleteMedicalTreatment,
   getAllMedicalTreatments,
   getSingleMedicalTreatment,
+  updateMedicalTreatment,
 } from '../controllers/medicalTreatment.js';
 
 import { protect } from '../modules/auth.js';
 
 // Protected Routes
 router.post('/medicalTreatments', protect, createMedicalTreatment);
+router.put('/medicalTreatment/:id', protect, updateMedicalTreatment);
 router.delete('/medicalTreatment/:id', protect, deleteMedicalTreatment);
 
 // Public Routes

@@ -7,6 +7,7 @@ import {
   deleteRaceHistory,
   getAllRaces,
   getSingleRaceHistory,
+  updateRaceHistory,
 } from '../controllers/raceHistory.js';
 
 // Public Routes
@@ -15,6 +16,7 @@ router.get('/raceHistory/:id', getSingleRaceHistory);
 
 //Protected Routes
 router.post('/raceHistory', protect, createRaceHistory);
+router.put('/raceHistory/:id', protect, updateRaceHistory);
 router.delete('/raceHistory/:id', protect, deleteRaceHistory);
 
 export default router;
