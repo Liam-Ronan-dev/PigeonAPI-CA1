@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { MedicalTreatment } from '../models/MedicalTreatment.js';
 import { Pigeon } from '../models/Pigeon.js';
-
+// testing
 export const getAllMedicalTreatments = async (req, res) => {
   try {
     const treatments = await MedicalTreatment.find().populate({
