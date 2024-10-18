@@ -10,10 +10,11 @@ import {
 } from '../controllers/pigeon.js';
 
 import { protect } from '../modules/auth.js';
+import { handleInputErrors } from '../modules/middleware.js';
 // import upload from '../middleware/upload.js'; // Multer configuration
 
 // Protected Routes
-router.post('/pigeon', protect, createPigeon);
+router.post('/pigeon', protect, handleInputErrors, createPigeon);
 router.put('/pigeon/:id', protect, updatePigeon);
 router.delete('/pigeon/:id', protect, deletePigeon);
 

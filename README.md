@@ -8,3 +8,5 @@
         - Test the seed all script
     3. Ensure the owner may only update their own pigeons
     4. Create ERD - Done
+    5. Add express-validator
+    
