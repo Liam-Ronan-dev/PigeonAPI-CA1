@@ -6,11 +6,13 @@ import { createUser, singIn } from './controllers/user.js';
 import pigeonRoutes from './routes/pigeon.js';
 import MedicalTreatmentRoutes from './routes/medicalTreatment.js';
 import raceHistory from './routes/raceHistory.js';
+import morgan from 'morgan';
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,8 +24,13 @@ app.use('/api', pigeonRoutes, MedicalTreatmentRoutes, raceHistory);
 app.post('/user', createUser);
 app.post('/signin', singIn);
 
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+  app.listen(process.env.PORT, () => {
+    console.log(
+      `Server listening on port: http://localhost:${process.env.PORT}`
+    );
+  });
+}
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server listening on port: http://localhost:${process.env.PORT}`);
-});
+export default app;

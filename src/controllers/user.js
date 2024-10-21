@@ -21,7 +21,7 @@ export const createUser = async (req, res, next) => {
 
     res
       .status(201)
-      .json({ token, message: `${user.username} has been created` });
+      .json({ token, message: `${user.username} has been created`, user });
   } catch (err) {
     res.status(400).json({ message: err.message });
     next(err);

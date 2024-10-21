@@ -20,7 +20,7 @@ export const getAllPigeons = async (req, res) => {
         select: 'raceName date positions',
       });
 
-    res.json({ data: pigeons });
+    res.status(200).json({ data: pigeons, message: 'success' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error', errors: err });
