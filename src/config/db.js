@@ -3,11 +3,12 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const connectDB = () => {
-  mongoose
-    .connect(process.env.MONGO_URL)
-    .then(() => console.log('MongoDB database is connected'))
-    .catch((err) => {
-      console.error(`Error connecting to DB: ${err}`);
-    });
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error);
+    process.exit(1); // Exit with failure code
+  }
 };

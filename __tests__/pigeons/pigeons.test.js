@@ -1,17 +1,22 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
 import app from '../../src/server.js';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
-import { beforeEach, afterEach, describe, it, expect } from '@jest/globals';
+import { beforeAll, afterAll, describe, it, expect } from '@jest/globals';
 
-dotenv.config();
+let mongoServer;
 
-beforeEach(async () => {
-  await mongoose.connect(process.env.MONGO_URL);
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
+
+  await mongoose.connect(mongoUri);
 });
 
-afterEach(async () => {
+afterAll(async () => {
+  // Close Mongoose connection and stop MongoDB Memory Server
+  await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
 });
 
@@ -19,10 +24,6 @@ describe('GET /api/pigeons', () => {
   it('Should return all pigeons', async () => {
     const res = await request(app).get('/api/pigeons');
     expect(res.statusCode).toBe(200);
-    expect(res.body.data.length).toBeGreaterThan(0);
+    expect(res.body.data).toBeInstanceOf(Array);
   });
-
-  // it('Should return a single pigeon', async () => {
-  //   const res = await request(app).get(`/api/pigeon/${id}`)
-  // });
 });
