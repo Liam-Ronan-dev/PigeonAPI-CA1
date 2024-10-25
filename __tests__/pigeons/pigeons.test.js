@@ -15,7 +15,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Close Mongoose connection and stop MongoDB Memory Server
   await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
 });
