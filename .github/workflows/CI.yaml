@@ -40,6 +40,10 @@ jobs:
       - name: Run ESLint check
         run: npm run lint
 
+      - name: Validate current commit (last commit) with commitlint
+        if: github.event_name == 'push'
+        run: npx commitlint --last --verbose
+
       - name: Run Unit Tests
         run: npm test
 

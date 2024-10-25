@@ -14,7 +14,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+console.log('hello world');
 app.get('/', (req, res) => {
   res.json({ message: 'hello world' });
 });
