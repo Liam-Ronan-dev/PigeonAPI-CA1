@@ -6,5 +6,8 @@
         - Edit race positions to match race participants
         - Test the seed all script
     3. Ensure the owner may only update their own pigeons
-    5. Add express-validator
+    5. Add express-validator files
+    6. Unit & Integration tests
+    7. File upload - Multer
+
     

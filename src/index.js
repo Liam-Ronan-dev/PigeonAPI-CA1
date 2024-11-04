@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import app from './server.js';
-import { connectDB } from './config/db.js'; // Your DB connection logic
+import { connectDB } from './config/db.js';
 
 dotenv.config();
 
@@ -16,6 +16,6 @@ if (process.env.NODE_ENV !== 'test') {
     })
     .catch((error) => {
       console.error('Failed to connect to the database:', error);
-      process.exit(1); // Exit the process if unable to connect
+      process.exit(1);
     });
 }
