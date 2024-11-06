@@ -1,27 +1,21 @@
 import request from 'supertest';
-import mongoose from 'mongoose';
-import app from '../../src/server.js';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import app from '../../src/app.js';
+import { connectDB, disconnectDB } from '../../src/config/db.js';
 
 import { beforeAll, afterAll, describe, it, expect } from '@jest/globals';
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
-
-  await mongoose.connect(mongoUri);
+  await connectDB();
 });
 
 afterAll(async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
+  await disconnectDB();
 });
 
-describe('GET /api/pigeons', () => {
-  it('Should return all pigeons', async () => {
+describe('Pigeons', () => {
+  it('Should return an array of all pigeons', async () => {
     const res = await request(app).get('/api/pigeons');
+    console.log(res.body);
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toBeInstanceOf(Array);
   });

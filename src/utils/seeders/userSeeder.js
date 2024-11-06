@@ -6,11 +6,10 @@ export const seedUsers = async () => {
     // await User.deleteMany();
 
     const users = [];
-    const numberOfUsers = process.argv[3];
+    let numberOfUsers = process.argv[3];
 
     if (numberOfUsers === undefined) {
-      console.error('Number of Users not specified');
-      process.exit(1);
+      numberOfUsers = 3;
     }
 
     for (let i = 0; i < numberOfUsers; i++) {

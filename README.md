@@ -8,6 +8,7 @@
     3. Ensure the owner may only update their own pigeons
     5. Add express-validator files
     6. Unit & Integration tests
+        - Follows Mo's setup for API testing
     7. File upload - Multer
 
     

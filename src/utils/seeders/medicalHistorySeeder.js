@@ -14,11 +14,10 @@ export const seedMedicalHistory = async () => {
     }
 
     const medicalTreatments = [];
-    const numberOfMedicalTreatments = process.argv[3];
+    let numberOfMedicalTreatments = process.argv[3];
 
     if (numberOfMedicalTreatments === undefined) {
-      console.error('Number of Medical Treatments not specified');
-      process.exit(1);
+      numberOfMedicalTreatments = 3;
     }
 
     for (let i = 0; i < numberOfMedicalTreatments; i++) {

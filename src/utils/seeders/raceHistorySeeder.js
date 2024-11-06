@@ -14,11 +14,10 @@ export const seedRaceHistory = async () => {
     }
 
     const raceHistories = [];
-    const numberOfRaceHistories = process.argv[3];
+    let numberOfRaceHistories = process.argv[3];
 
     if (numberOfRaceHistories === undefined) {
-      console.error('Number of Race Histories not specified');
-      process.exit(1);
+      numberOfRaceHistories = 3;
     }
 
     for (let i = 0; i < numberOfRaceHistories; i++) {

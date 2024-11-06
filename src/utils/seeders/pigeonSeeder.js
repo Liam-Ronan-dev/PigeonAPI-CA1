@@ -17,11 +17,10 @@ export const seedPigeons = async () => {
     }
 
     const pigeons = [];
-    const numberOfPigeons = process.argv[3];
+    let numberOfPigeons = process.argv[3];
 
     if (numberOfPigeons === undefined) {
-      console.error('Number of Pigeons not specified');
-      process.exit(1);
+      numberOfPigeons = 3;
     }
 
     for (let i = 0; i < numberOfPigeons; i++) {
