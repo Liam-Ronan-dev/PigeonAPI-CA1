@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
 import { Pigeon } from '../models/Pigeon.js';
 
-export const getAllPigeons = async (req, res) => {
+export const getAllPigeons = async (req, res, next) => {
   try {
     const pigeons = await Pigeon.find()
       .populate({
@@ -21,20 +20,17 @@ export const getAllPigeons = async (req, res) => {
       });
 
     res.status(200).json({ data: pigeons, message: 'success' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+  } catch (error) {
+    console.error(error);
+
+    // Pass the error to the next middleware - error handler in middleware.js
+    next(error);
   }
 };
 
-export const getSinglePigeon = async (req, res) => {
+export const getSinglePigeon = async (req, res, next) => {
   try {
-    const id = req.params.id;
-
-    // Validate the ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid pigeon ID' });
-    }
+    const { id } = req.params;
 
     // Find the pigeon by ID
     const pigeon = await Pigeon.findById(id)
@@ -54,41 +50,32 @@ export const getSinglePigeon = async (req, res) => {
         select: 'raceName date positions',
       });
 
-    // Check if pigeon exists
     if (!pigeon) {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    // Return the pigeon data
-    res.json({ data: pigeon });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(200).json({ data: pigeon });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
-export const deletePigeon = async (req, res) => {
+export const deletePigeon = async (req, res, next) => {
   try {
     const id = req.params.id;
-
-    // Validate the ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid pigeon ID' });
-    }
 
     // Find and delete the pigeon by ID
     const pigeon = await Pigeon.findByIdAndDelete(id);
 
-    // Check if pigeon exists
     if (!pigeon) {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    // Return a success message
-    res.json({ message: `Pigeon deleted successfully` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -124,32 +111,22 @@ export const createPigeon = async (req, res, next) => {
     //   pigeonData.image = req.file.path;
     // }
 
-    // Create the pigeon in the database
     const pigeon = await Pigeon.create(pigeonData);
 
     // Respond with the created pigeon
-    res.status(201).json({ data: pigeon });
+    res
+      .status(201)
+      .json({ data: pigeon, message: `${name} successfully created` });
   } catch (error) {
     console.error(error);
-
-    // Handle specific errors (e.g., validation errors)
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ msg: error.message, errors: error.errors });
-    }
-
-    // Pass the error to the next middleware (could be an error handler)
     next(error);
   }
 };
 
-export const updatePigeon = async (req, res) => {
+export const updatePigeon = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid Pigeon ID' });
-    }
 
     const pigeon = await Pigeon.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -160,9 +137,12 @@ export const updatePigeon = async (req, res) => {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    res.json({ data: pigeon });
+    res.status(200).json({
+      data: pigeon,
+      message: `${pigeon.name} updated successfully`,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'server error', errors: error });
+    next(error);
   }
 };

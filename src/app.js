@@ -7,6 +7,7 @@ import pigeonRoutes from './routes/pigeon.js';
 import MedicalTreatmentRoutes from './routes/medicalTreatment.js';
 import raceHistory from './routes/raceHistory.js';
 import morgan from 'morgan';
+import { errorHandler } from './modules/middleware.js';
 
 const app = express();
 
@@ -25,11 +26,19 @@ app.get('/', (req, res) => {
   res.json({ message: 'hello world' });
 });
 
+app.get('/error', (req, res, next) => {
+  const error = new Error('This is a test error!');
+  error.status = 500;
+  next(error);
+});
+
 app.use('/api', pigeonRoutes);
 app.use('/api', MedicalTreatmentRoutes);
 app.use('/api', raceHistory);
 
 app.post('/user', createUser);
 app.post('/signin', singIn);
+
+app.use(errorHandler);
 
 export default app;

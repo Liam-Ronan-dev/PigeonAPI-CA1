@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
 import { MedicalTreatment } from '../models/MedicalTreatment.js';
 import { Pigeon } from '../models/Pigeon.js';
-// testing
-export const getAllMedicalTreatments = async (req, res) => {
+
+export const getAllMedicalTreatments = async (req, res, next) => {
   try {
     const treatments = await MedicalTreatment.find().populate({
       path: 'pigeons',
@@ -10,20 +9,16 @@ export const getAllMedicalTreatments = async (req, res) => {
       select: 'name ringNumber',
     });
 
-    res.json({ data: treatments });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+    res.status(200).json({ data: treatments, message: 'success' });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
-export const getSingleMedicalTreatment = async (req, res) => {
+export const getSingleMedicalTreatment = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid Medical Treatment ID' });
-    }
 
     const medicalTreatment = await MedicalTreatment.findById(id).populate({
       path: 'pigeons',
@@ -35,14 +30,14 @@ export const getSingleMedicalTreatment = async (req, res) => {
       return res.status(404).json({ message: 'Medical treatment not found' });
     }
 
-    res.json({ data: medicalTreatment });
+    res.status(200).json({ data: medicalTreatment });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 };
 
-export const createMedicalTreatment = async (req, res) => {
+export const createMedicalTreatment = async (req, res, next) => {
   try {
     const {
       treatmentName,
@@ -71,22 +66,19 @@ export const createMedicalTreatment = async (req, res) => {
       );
     }
 
-    res.status(201).json({ data: medicalTreatment });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+    res.status(201).json({
+      data: medicalTreatment,
+      message: `${treatmentName} successfully created`,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
-export const deleteMedicalTreatment = async (req, res) => {
+export const deleteMedicalTreatment = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({ message: `Invalid medical treatment ID: ${id}` });
-    }
 
     const medicalTreatment = await MedicalTreatment.findByIdAndDelete(id);
 
@@ -94,21 +86,17 @@ export const deleteMedicalTreatment = async (req, res) => {
       return res.status(404).json({ message: 'Medical Treatment not found' });
     }
 
-    res.json({ message: `Medical Treatment - id:${id} deleted successfully` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
-export const updateMedicalTreatment = async (req, res) => {
+export const updateMedicalTreatment = async (req, res, next) => {
   try {
     const id = req.params.id;
     const updateData = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid Medical Treatment ID' });
-    }
 
     const medicalTreatment = await MedicalTreatment.findByIdAndUpdate(
       id,
@@ -123,9 +111,12 @@ export const updateMedicalTreatment = async (req, res) => {
       return res.status(404).json({ message: 'medical Treatment not found' });
     }
 
-    res.json({ data: medicalTreatment });
+    res.status(200).json({
+      data: medicalTreatment,
+      message: `${medicalTreatment.treatmentName} successfully updated`,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'server error', errors: error });
+    next(error);
   }
 };
