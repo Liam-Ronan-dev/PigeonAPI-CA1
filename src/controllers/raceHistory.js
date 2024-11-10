@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
 import { RaceHistory } from '../models/RaceHistory.js';
 import { Pigeon } from '../models/Pigeon.js';
 
-export const getAllRaces = async (req, res) => {
+export const getAllRaces = async (req, res, next) => {
   try {
     const races = await RaceHistory.find().populate({
       path: 'pigeons',
@@ -16,14 +15,14 @@ export const getAllRaces = async (req, res) => {
         .json({ message: 'Currently, there is no archived Races' });
     }
 
-    res.json({ data: races });
+    res.status(200).json({ data: races });
   } catch (error) {
-    console.error(`Error retrieving all Races: ${error}`);
-    res.status(500).json({ message: 'Server error', errors: error });
+    console.error(error);
+    next(error);
   }
 };
 
-export const createRaceHistory = async (req, res) => {
+export const createRaceHistory = async (req, res, next) => {
   try {
     const {
       pigeons,
@@ -58,20 +57,18 @@ export const createRaceHistory = async (req, res) => {
       );
     }
 
-    res.status(200).json({ data: race });
+    res
+      .status(201)
+      .json({ data: race, message: `${raceName} successfully created` });
   } catch (error) {
-    console.error(`Error creating pigeon: ${error}`);
-    res.status(500).json({ message: 'Server error', errors: error });
+    console.error(error);
+    next(error);
   }
 };
 
-export const getSingleRaceHistory = async (req, res) => {
+export const getSingleRaceHistory = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: `No pigeon with this id: ${id}` });
-    }
 
     const race = await RaceHistory.findById(id).populate({
       path: 'pigeons',
@@ -85,20 +82,14 @@ export const getSingleRaceHistory = async (req, res) => {
 
     res.status(200).json({ data: race });
   } catch (error) {
-    console.error(`Error finding pigeon with that ID: ${error}`);
-    res.status().json({ message: 'Server error', errors: error });
+    console.error(error);
+    next(error);
   }
 };
 
-export const deleteRaceHistory = async (req, res) => {
+export const deleteRaceHistory = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({ message: `Invalid Race history ID: ${id}` });
-    }
 
     const race = await RaceHistory.findByIdAndDelete(id);
 
@@ -106,21 +97,19 @@ export const deleteRaceHistory = async (req, res) => {
       return res.status(404).json({ message: 'Race not found' });
     }
 
-    res.json({ message: `Race with id: ${id} deleted successfully` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', errors: err });
+    res
+      .status(200)
+      .json({ message: `Race ${race.raceName} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
-export const updateRaceHistory = async (req, res) => {
+export const updateRaceHistory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid Race History ID' });
-    }
 
     const raceHistory = await RaceHistory.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -131,9 +120,12 @@ export const updateRaceHistory = async (req, res) => {
       return res.status(404).json({ message: 'race History not found' });
     }
 
-    res.json({ data: raceHistory });
+    res.status(200).json({
+      data: raceHistory,
+      message: `${raceHistory.raceName} updated successfully`,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'server error', errors: error });
+    next(error);
   }
 };

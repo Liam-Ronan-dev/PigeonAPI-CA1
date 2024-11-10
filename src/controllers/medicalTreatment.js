@@ -9,6 +9,12 @@ export const getAllMedicalTreatments = async (req, res, next) => {
       select: 'name ringNumber',
     });
 
+    if (!treatments) {
+      return res.status(404).json({
+        message: 'Currently, there is no archived Medical Treatments',
+      });
+    }
+
     res.status(200).json({ data: treatments, message: 'success' });
   } catch (error) {
     console.error(error);
@@ -86,7 +92,9 @@ export const deleteMedicalTreatment = async (req, res, next) => {
       return res.status(404).json({ message: 'Medical Treatment not found' });
     }
 
-    res.status(204).send();
+    res.status(200).json({
+      message: `Medical Treatment ${medicalTreatment.treatmentName} deleted successfully`,
+    });
   } catch (error) {
     console.error(error);
     next(error);
@@ -95,7 +103,7 @@ export const deleteMedicalTreatment = async (req, res, next) => {
 
 export const updateMedicalTreatment = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const updateData = req.body;
 
     const medicalTreatment = await MedicalTreatment.findByIdAndUpdate(

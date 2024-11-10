@@ -19,6 +19,12 @@ export const getAllPigeons = async (req, res, next) => {
         select: 'raceName date positions',
       });
 
+    if (!pigeons) {
+      return res
+        .status(404)
+        .json({ message: 'Currently, there is no archived Pigeons' });
+    }
+
     res.status(200).json({ data: pigeons, message: 'success' });
   } catch (error) {
     console.error(error);
@@ -65,14 +71,19 @@ export const deletePigeon = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    // Find and delete the pigeon by ID
-    const pigeon = await Pigeon.findByIdAndDelete(id);
+    // Find the pigeon by ID and ensure it belongs to the logged-in user
+    const pigeon = await Pigeon.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
 
     if (!pigeon) {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    res.status(204).send();
+    res
+      .status(200)
+      .json({ message: `Pigeon ${pigeon.name} deleted successfully` });
   } catch (error) {
     console.error(error);
     next(error);
@@ -128,13 +139,20 @@ export const updatePigeon = async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    const pigeon = await Pigeon.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    // Find the pigeon by ID and ensure it belongs to the logged-in user
+    const pigeon = await Pigeon.findOneAndUpdate(
+      { _id: id, owner: req.user.id }, // Ensure the owner matches the logged-in user
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!pigeon) {
-      return res.status(404).json({ message: 'Pigeon not found' });
+      return res.status(404).json({
+        message: 'Pigeon not found or you are not authorized to update it',
+      });
     }
 
     res.status(200).json({
