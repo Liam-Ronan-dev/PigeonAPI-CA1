@@ -15,7 +15,10 @@ export const getAllRaces = async (req, res, next) => {
         .json({ message: 'Currently, there is no archived Races' });
     }
 
-    res.status(200).json({ data: races });
+    res.status(200).json({
+      data: races,
+      message: 'successfully retrieved all Race Histories',
+    });
   } catch (error) {
     console.error(error);
     next(error);
@@ -80,7 +83,10 @@ export const getSingleRaceHistory = async (req, res, next) => {
       return res.status(404).json({ message: 'Race not found' });
     }
 
-    res.status(200).json({ data: race });
+    res.status(200).json({
+      data: race,
+      message: `Successfully retrieved the ${race.raceName}`,
+    });
   } catch (error) {
     console.error(error);
     next(error);

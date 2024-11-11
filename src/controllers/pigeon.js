@@ -25,7 +25,9 @@ export const getAllPigeons = async (req, res, next) => {
         .json({ message: 'Currently, there is no archived Pigeons' });
     }
 
-    res.status(200).json({ data: pigeons, message: 'success' });
+    res
+      .status(200)
+      .json({ data: pigeons, message: 'successfully retrieved all Pigeons' });
   } catch (error) {
     console.error(error);
 
@@ -60,7 +62,9 @@ export const getSinglePigeon = async (req, res, next) => {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    res.status(200).json({ data: pigeon });
+    res
+      .status(200)
+      .json({ data: pigeon, message: `Successfully retrieved ${pigeon.name}` });
   } catch (error) {
     console.error(error);
     next(error);

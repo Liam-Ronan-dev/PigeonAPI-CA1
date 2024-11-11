@@ -33,7 +33,7 @@ const raceHistoryValidations = [
   body('totalParticipants')
     .optional()
     .isInt({ min: 24 })
-    .withMessage('Total participants must be an integer greater than 0.'),
+    .withMessage('Total participants must be an integer greater than 24.'),
 
   body('windSpeed')
     .optional()

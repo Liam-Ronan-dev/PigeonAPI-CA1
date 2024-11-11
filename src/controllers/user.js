@@ -29,9 +29,9 @@ export const createUser = async (req, res, next) => {
 };
 
 /**
- * Signin user function
+ * Sign-in user function
  */
-export const singIn = async (req, res) => {
+export const singIn = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -48,6 +48,7 @@ export const singIn = async (req, res) => {
     const token = createJWT(user);
     res.status(200).json({ token, message: `${user.username} has signed in!` });
   } catch (err) {
-    res.status(500).json({ error: `Server error: ${err}` });
+    res.status(400).json({ message: err.message });
+    next(err);
   }
 };

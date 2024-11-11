@@ -3,7 +3,7 @@ import { User } from '../../models/User.js';
 
 export const seedUsers = async () => {
   try {
-    // await User.deleteMany();
+    await User.deleteMany();
 
     const users = [];
     let numberOfUsers = process.argv[3];

@@ -15,7 +15,10 @@ export const getAllMedicalTreatments = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({ data: treatments, message: 'success' });
+    res.status(200).json({
+      data: treatments,
+      message: 'successfully retrieved all Treatments',
+    });
   } catch (error) {
     console.error(error);
     next(error);
