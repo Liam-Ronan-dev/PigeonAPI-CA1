@@ -17,6 +17,7 @@ import {
   getPigeonByIdValidator,
   updatePigeonValidator,
 } from '../validators/pigeonValidator.js';
+import { imageUpload } from '../modules/imageUpload.js';
 // import upload from '../middleware/upload.js'; // Multer configuration
 
 // Protected Routes
@@ -25,6 +26,7 @@ router.post(
   protect,
   createPigeonValidator,
   handleInputErrors,
+  imageUpload.single('imageUrl'),
   createPigeon
 );
 
@@ -33,6 +35,7 @@ router.put(
   protect,
   updatePigeonValidator,
   handleInputErrors,
+  imageUpload.single('imageUrl'),
   updatePigeon
 );
 

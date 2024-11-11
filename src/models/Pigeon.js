@@ -15,6 +15,7 @@ const PigeonSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: 'MedicalTreatment' },
   ],
   raceHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RaceHistory' }],
+  imageUrl: { type: String },
 });
 
 export const Pigeon = mongoose.model('Pigeon', PigeonSchema);

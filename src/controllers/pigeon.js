@@ -122,9 +122,10 @@ export const createPigeon = async (req, res, next) => {
     };
 
     // Include the image path if an image was uploaded
-    // if (req.file) {
-    //   pigeonData.image = req.file.path;
-    // }
+    if (req.file) {
+      pigeonData.imageUrl =
+        process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
+    }
 
     const pigeon = await Pigeon.create(pigeonData);
 
@@ -142,6 +143,12 @@ export const updatePigeon = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
+
+    if (req.file && req.file.location) {
+      updateData.imageUrl = req.file.location;
+    } else if (req.file && req.file.path) {
+      updateData.imageUrl = req.file.path;
+    }
 
     // Find the pigeon by ID and ensure it belongs to the logged-in user
     const pigeon = await Pigeon.findOneAndUpdate(
