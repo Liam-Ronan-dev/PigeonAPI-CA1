@@ -46,7 +46,10 @@ export const singIn = async (req, res, next) => {
     }
 
     const token = createJWT(user);
-    res.status(200).json({ token, message: `${user.username} has signed in!` });
+    res.status(200).json({
+      token,
+      message: `${user.username} with Id: ${user.id} has signed in!`,
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
     next(err);

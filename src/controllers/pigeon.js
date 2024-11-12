@@ -75,15 +75,23 @@ export const deletePigeon = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    // Find the pigeon by ID and ensure it belongs to the logged-in user
-    const pigeon = await Pigeon.findOneAndDelete({
+    // Find the pigeon by ID
+    const pigeon = await Pigeon.findOne({
       _id: id,
-      owner: req.user.id,
     });
 
     if (!pigeon) {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
+
+    // Check if the logged-in user is the owner of the pigeon
+    if (pigeon.owner.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: 'You are not authorized to Delete this pigeon.' });
+    }
+
+    await pigeon.deleteOne();
 
     res
       .status(200)
@@ -144,10 +152,9 @@ export const updatePigeon = async (req, res, next) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    if (req.file && req.file.location) {
-      updateData.imageUrl = req.file.location;
-    } else if (req.file && req.file.path) {
-      updateData.imageUrl = req.file.path;
+    if (req.file) {
+      updateData.imageUrl =
+        process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
 
     // Find the pigeon by ID and ensure it belongs to the logged-in user
@@ -162,7 +169,8 @@ export const updatePigeon = async (req, res, next) => {
 
     if (!pigeon) {
       return res.status(404).json({
-        message: 'Pigeon not found or you are not authorized to update it',
+        message:
+          'Pigeon not found or you are not authorised to update this pigeon',
       });
     }
 

@@ -57,6 +57,22 @@ export const createMedicalTreatment = async (req, res, next) => {
       administeredBy,
     } = req.body;
 
+    // Verify Ownership of Pigeons - so logged in user can't create a treatment
+    // for a pigeon they don't own
+    if (pigeons && pigeons.length > 0) {
+      const ownedPigeons = await Pigeon.find({
+        _id: { $in: pigeons },
+        owner: req.user.id,
+      });
+
+      if (ownedPigeons.length !== pigeons.length) {
+        return res.status(403).json({
+          message:
+            'You are not authorized to create a medical treatment for pigeons that you do not own.',
+        });
+      }
+    }
+
     const treatmentData = {
       treatmentName,
       description,
@@ -64,6 +80,7 @@ export const createMedicalTreatment = async (req, res, next) => {
       treatmentDuration,
       pigeons,
       administeredBy,
+      owner: req.user.id,
     };
 
     const medicalTreatment = await MedicalTreatment.create(treatmentData);
@@ -89,14 +106,20 @@ export const deleteMedicalTreatment = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const medicalTreatment = await MedicalTreatment.findByIdAndDelete(id);
+    // Find the medical treatment by ID and owner
+    const medicalTreatment = await MedicalTreatment.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
 
     if (!medicalTreatment) {
-      return res.status(404).json({ message: 'Medical Treatment not found' });
+      return res.status(404).json({
+        message: 'Medical Treatment not found or not authorized to delete.',
+      });
     }
 
     res.status(200).json({
-      message: `Medical Treatment ${medicalTreatment.treatmentName} deleted successfully`,
+      message: `Medical Treatment: ${medicalTreatment.treatmentName} deleted successfully`,
     });
   } catch (error) {
     console.error(error);
@@ -108,6 +131,20 @@ export const updateMedicalTreatment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
+
+    if (updateData.pigeons && updateData.pigeons.length > 0) {
+      const ownedPigeons = await Pigeon.find({
+        _id: { $in: updateData.pigeons },
+        owner: req.user.id,
+      });
+
+      if (ownedPigeons.length !== updateData.pigeons.length) {
+        return res.status(403).json({
+          message:
+            'You are not authorized to assign a medical treatment to pigeons that you do not own.',
+        });
+      }
+    }
 
     const medicalTreatment = await MedicalTreatment.findByIdAndUpdate(
       id,

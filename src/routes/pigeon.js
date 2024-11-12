@@ -24,18 +24,18 @@ import { imageUpload } from '../modules/imageUpload.js';
 router.post(
   '/pigeon',
   protect,
+  imageUpload.single('imageUrl'),
   createPigeonValidator,
   handleInputErrors,
-  imageUpload.single('imageUrl'),
   createPigeon
 );
 
 router.put(
   '/pigeon/:id',
   protect,
+  imageUpload.single('imageUrl'),
   updatePigeonValidator,
   handleInputErrors,
-  imageUpload.single('imageUrl'),
   updatePigeon
 );
 

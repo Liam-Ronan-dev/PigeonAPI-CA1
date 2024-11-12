@@ -5,20 +5,23 @@ const pigeonValidations = [
   body('name')
     .notEmpty()
     .withMessage('Pigeon name is required.')
+    .bail()
     .isString()
     .withMessage('Pigeon name must be a string.'),
 
   body('ringNumber')
     .notEmpty()
     .withMessage('Ring number is required.')
+    .bail()
     .isString()
     .withMessage('Ring number must be a string.'),
 
   body('sex')
-    .isIn(['Hen', 'Cock'])
-    .withMessage('Sex must be either Hen or Cock.')
     .notEmpty()
-    .withMessage('Sex is required.'),
+    .withMessage('Sex is required.')
+    .bail()
+    .isIn(['Hen', 'Cock'])
+    .withMessage('Sex must be either Hen or Cock.'),
 
   body('breed')
     .optional()

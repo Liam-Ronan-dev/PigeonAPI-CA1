@@ -6,6 +6,7 @@ const MedicalTreatmentSchema = new mongoose.Schema({
   dateAdministered: { type: Date, required: true },
   treatmentDuration: { type: String },
   pigeons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pigeon' }],
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   administeredBy: { type: String },
 });
 
