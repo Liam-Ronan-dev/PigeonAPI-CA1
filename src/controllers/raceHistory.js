@@ -39,6 +39,23 @@ export const createRaceHistory = async (req, res, next) => {
       notes,
     } = req.body;
 
+    // Step 1: Verify Ownership of Pigeons
+    if (pigeons && pigeons.length > 0) {
+      // Fetch pigeons from database to verify ownership
+      const ownedPigeons = await Pigeon.find({
+        _id: { $in: pigeons },
+        owner: req.user.id, // Ensure pigeons are owned by the logged-in user
+      });
+
+      // Check if the number of pigeons fetched matches the number in the request
+      if (ownedPigeons.length !== pigeons.length) {
+        return res.status(403).json({
+          message:
+            'You are not authorized to add pigeons you do not own to a race.',
+        });
+      }
+    }
+
     const raceData = {
       pigeons,
       raceName,
@@ -97,10 +114,15 @@ export const deleteRaceHistory = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const race = await RaceHistory.findByIdAndDelete(id);
+    const race = await RaceHistory.findByIdAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
 
     if (!race) {
-      return res.status(404).json({ message: 'Race not found' });
+      return res
+        .status(404)
+        .json({ message: 'Race not found or not authorized to delete' });
     }
 
     res
@@ -116,6 +138,20 @@ export const updateRaceHistory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
+
+    if (updateData.pigeons && updateData.pigeons.length > 0) {
+      const ownedPigeons = await Pigeon.find({
+        _id: { $in: updateData.pigeons },
+        owner: req.user.id,
+      });
+
+      if (ownedPigeons.length !== updateData.pigeons.length) {
+        return res.status(403).json({
+          message:
+            'You are not authorized to assign a medical treatment to pigeons that you do not own.',
+        });
+      }
+    }
 
     const raceHistory = await RaceHistory.findByIdAndUpdate(id, updateData, {
       new: true,
