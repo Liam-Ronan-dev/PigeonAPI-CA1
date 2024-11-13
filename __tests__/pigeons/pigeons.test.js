@@ -12,7 +12,7 @@ afterAll(async () => {
   await disconnectDB();
 });
 
-describe('Pigeons', () => {
+describe('Pigeons /GET', () => {
   it('Should return an array of all pigeons', async () => {
     const res = await request(app).get('/api/pigeons');
     console.log(res.body);

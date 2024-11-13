@@ -1,37 +1,28 @@
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-let db;
-
 export const connectDB = async () => {
-  db = null;
+  const dbUri =
+    process.env.NODE_ENV === 'testing'
+      ? process.env.MONGO_TEST_URL
+      : process.env.MONGO_URL;
 
   try {
-    mongoose.set('strictQuery', false);
-
-    let databaseURL = process.env.MONGO_URL;
-
-    if (process.env.NODE_ENV === 'testing') {
-      databaseURL = process.env.MONGO_TEST_URL;
-    }
-
-    await mongoose.connect(databaseURL);
-    console.log('MongoDB connected successfully');
-    db = mongoose.connection;
+    await mongoose.connect(dbUri);
+    console.log(`MongoDB connected successfully!`);
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error);
-    process.exit(1); // Exit with failure code
-  } finally {
-    if (db !== null && db.readyState === 1) {
-      // await db.close();
-      // console.log("Disconnected successfully from db");
-    }
+    process.exit(1);
   }
 };
 
 export const disconnectDB = async () => {
-  await db.close();
-  console.log('MongoDB disconnected successfully');
+  try {
+    await mongoose.connection.close();
+    console.log('MongoDB disconnected successfully');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB:', error);
+  }
 };
