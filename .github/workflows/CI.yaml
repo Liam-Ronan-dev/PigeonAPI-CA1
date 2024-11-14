@@ -48,7 +48,7 @@ jobs:
         run: |
           echo "PORT=3002" >> $GITHUB_ENV
           echo "MONGO_TEST_URL=${{ secrets.MONGO_TEST_URL }}" >> $GITHUB_ENV
-          echo "NODE_ENV=test" >> $GITHUB_ENV
+          echo "NODE_ENV=testing" >> $GITHUB_ENV
 
       - name: Run Unit Tests
         env:
