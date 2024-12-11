@@ -13,7 +13,14 @@ const app = express();
 
 dotenv.config();
 
-app.use(cors());
+// Enhanced CORS configuration
+const corsOptions = {
+  origin: '*', // Allow all origins (update with specific domain if necessary)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+};
+app.use(cors(corsOptions));
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
