@@ -1,5 +1,7 @@
 import { Pigeon } from '../models/Pigeon.js';
 
+const s3BaseUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`;
+
 export const getAllPigeons = async (req, res, next) => {
   try {
     const pigeons = await Pigeon.find()
@@ -25,12 +27,18 @@ export const getAllPigeons = async (req, res, next) => {
         .json({ message: 'Currently, there is no archived Pigeons' });
     }
 
-    res
-      .status(200)
-      .json({ data: pigeons, message: 'successfully retrieved all Pigeons' });
+    // Add the full image URL to each pigeon
+    const enrichedPigeons = pigeons.map((pigeon) => ({
+      ...pigeon.toObject(),
+      imageUrl: pigeon.imageUrl ? `${s3BaseUrl}/${pigeon.imageUrl}` : null,
+    }));
+
+    res.status(200).json({
+      data: enrichedPigeons,
+      message: 'successfully retrieved all Pigeons',
+    });
   } catch (error) {
     console.error(error);
-
     // Pass the error to the next middleware - error handler in middleware.js
     next(error);
   }
@@ -62,9 +70,15 @@ export const getSinglePigeon = async (req, res, next) => {
       return res.status(404).json({ message: 'Pigeon not found' });
     }
 
-    res
-      .status(200)
-      .json({ data: pigeon, message: `Successfully retrieved ${pigeon.name}` });
+    const enrichedPigeon = {
+      ...pigeon.toObject(),
+      imageUrl: pigeon.imageUrl ? `${s3BaseUrl}/${pigeon.imageUrl}` : null,
+    };
+
+    res.status(200).json({
+      data: enrichedPigeon,
+      message: `Successfully retrieved ${pigeon.name}`,
+    });
   } catch (error) {
     console.error(error);
     next(error);
